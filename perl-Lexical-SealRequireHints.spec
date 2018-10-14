@@ -4,16 +4,16 @@
 #
 Name     : perl-Lexical-SealRequireHints
 Version  : 0.011
-Release  : 1
+Release  : 2
 URL      : https://cpan.metacpan.org/authors/id/Z/ZE/ZEFRAM/Lexical-SealRequireHints-0.011.tar.gz
 Source0  : https://cpan.metacpan.org/authors/id/Z/ZE/ZEFRAM/Lexical-SealRequireHints-0.011.tar.gz
 Source1  : http://http.debian.net/debian/pool/main/libl/liblexical-sealrequirehints-perl/liblexical-sealrequirehints-perl_0.011-2.debian.tar.xz
 Summary  : 'prevent leakage of lexical hints'
 Group    : Development/Tools
-License  : Artistic-1.0-Perl
-Requires: perl-Lexical-SealRequireHints-lib
-Requires: perl-Lexical-SealRequireHints-man
-BuildRequires : perl(Module::Build)
+License  : Artistic-1.0 Artistic-1.0-Perl GPL-1.0
+Requires: perl-Lexical-SealRequireHints-lib = %{version}-%{release}
+Requires: perl-Lexical-SealRequireHints-license = %{version}-%{release}
+BuildRequires : buildreq-cpan
 
 %description
 NAME
@@ -29,27 +29,38 @@ loaded during Unicode regular expression matching, into whatever source
 is compiling at the time of the regexp match.  This bug, [perl #73174],
 was present from Perl 5.8.7 up to Perl 5.11.5, fixed in Perl 5.12.0.
 
+%package dev
+Summary: dev components for the perl-Lexical-SealRequireHints package.
+Group: Development
+Requires: perl-Lexical-SealRequireHints-lib = %{version}-%{release}
+Provides: perl-Lexical-SealRequireHints-devel = %{version}-%{release}
+
+%description dev
+dev components for the perl-Lexical-SealRequireHints package.
+
+
 %package lib
 Summary: lib components for the perl-Lexical-SealRequireHints package.
 Group: Libraries
+Requires: perl-Lexical-SealRequireHints-license = %{version}-%{release}
 
 %description lib
 lib components for the perl-Lexical-SealRequireHints package.
 
 
-%package man
-Summary: man components for the perl-Lexical-SealRequireHints package.
+%package license
+Summary: license components for the perl-Lexical-SealRequireHints package.
 Group: Default
 
-%description man
-man components for the perl-Lexical-SealRequireHints package.
+%description license
+license components for the perl-Lexical-SealRequireHints package.
 
 
 %prep
-tar -xf %{SOURCE1}
-cd ..
 %setup -q -n Lexical-SealRequireHints-0.011
-mkdir -p %{_topdir}/BUILD/Lexical-SealRequireHints-0.011/deblicense/
+cd ..
+%setup -q -T -D -n Lexical-SealRequireHints-0.011 -b 1
+mkdir -p deblicense/
 mv %{_topdir}/BUILD/debian/* %{_topdir}/BUILD/Lexical-SealRequireHints-0.011/deblicense/
 
 %build
@@ -67,10 +78,12 @@ fi
 
 %install
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/perl-Lexical-SealRequireHints
+cp deblicense/copyright %{buildroot}/usr/share/package-licenses/perl-Lexical-SealRequireHints/deblicense_copyright
 if test -f Makefile.PL; then
-make pure_install PERL_INSTALL_ROOT=%{buildroot}
+make pure_install PERL_INSTALL_ROOT=%{buildroot} INSTALLDIRS=vendor
 else
-./Build install --installdirs=site --destdir=%{buildroot}
+./Build install --installdirs=vendor --destdir=%{buildroot}
 fi
 find %{buildroot} -type f -name .packlist -exec rm -f {} ';'
 find %{buildroot} -depth -type d -exec rmdir {} 2>/dev/null ';'
@@ -79,12 +92,16 @@ find %{buildroot} -type f -name '*.bs' -empty -exec rm -f {} ';'
 
 %files
 %defattr(-,root,root,-)
-/usr/lib/perl5/site_perl/5.26.1/x86_64-linux-thread-multi/Lexical/SealRequireHints.pm
+/usr/lib/perl5/vendor_perl/5.26.1/x86_64-linux-thread-multi/Lexical/SealRequireHints.pm
+
+%files dev
+%defattr(-,root,root,-)
+/usr/share/man/man3/Lexical::SealRequireHints.3
 
 %files lib
 %defattr(-,root,root,-)
-/usr/lib/perl5/site_perl/5.26.1/x86_64-linux-thread-multi/auto/Lexical/SealRequireHints/SealRequireHints.so
+/usr/lib/perl5/vendor_perl/5.26.1/x86_64-linux-thread-multi/auto/Lexical/SealRequireHints/SealRequireHints.so
 
-%files man
-%defattr(-,root,root,-)
-/usr/share/man/man3/Lexical::SealRequireHints.3
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/perl-Lexical-SealRequireHints/deblicense_copyright
