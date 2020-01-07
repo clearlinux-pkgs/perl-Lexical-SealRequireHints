@@ -4,14 +4,14 @@
 #
 Name     : perl-Lexical-SealRequireHints
 Version  : 0.011
-Release  : 11
+Release  : 12
 URL      : https://cpan.metacpan.org/authors/id/Z/ZE/ZEFRAM/Lexical-SealRequireHints-0.011.tar.gz
 Source0  : https://cpan.metacpan.org/authors/id/Z/ZE/ZEFRAM/Lexical-SealRequireHints-0.011.tar.gz
 Source1  : http://http.debian.net/debian/pool/main/libl/liblexical-sealrequirehints-perl/liblexical-sealrequirehints-perl_0.011-2.debian.tar.xz
-Summary  : prevent leakage of lexical hints
+Summary  : 'prevent leakage of lexical hints'
 Group    : Development/Tools
 License  : Artistic-1.0-Perl
-Requires: perl-Lexical-SealRequireHints-lib = %{version}-%{release}
+Requires: perl-Lexical-SealRequireHints-perl = %{version}-%{release}
 BuildRequires : buildreq-cpan
 
 %description
@@ -31,7 +31,6 @@ was present from Perl 5.8.7 up to Perl 5.11.5, fixed in Perl 5.12.0.
 %package dev
 Summary: dev components for the perl-Lexical-SealRequireHints package.
 Group: Development
-Requires: perl-Lexical-SealRequireHints-lib = %{version}-%{release}
 Provides: perl-Lexical-SealRequireHints-devel = %{version}-%{release}
 Requires: perl-Lexical-SealRequireHints = %{version}-%{release}
 
@@ -39,26 +38,28 @@ Requires: perl-Lexical-SealRequireHints = %{version}-%{release}
 dev components for the perl-Lexical-SealRequireHints package.
 
 
-%package lib
-Summary: lib components for the perl-Lexical-SealRequireHints package.
-Group: Libraries
+%package perl
+Summary: perl components for the perl-Lexical-SealRequireHints package.
+Group: Default
+Requires: perl-Lexical-SealRequireHints = %{version}-%{release}
 
-%description lib
-lib components for the perl-Lexical-SealRequireHints package.
+%description perl
+perl components for the perl-Lexical-SealRequireHints package.
 
 
 %prep
 %setup -q -n Lexical-SealRequireHints-0.011
-cd ..
-%setup -q -T -D -n Lexical-SealRequireHints-0.011 -b 1
+cd %{_builddir}
+tar xf %{_sourcedir}/liblexical-sealrequirehints-perl_0.011-2.debian.tar.xz
+cd %{_builddir}/Lexical-SealRequireHints-0.011
 mkdir -p deblicense/
-cp -r %{_topdir}/BUILD/debian/* %{_topdir}/BUILD/Lexical-SealRequireHints-0.011/deblicense/
+cp -r %{_builddir}/debian/* %{_builddir}/Lexical-SealRequireHints-0.011/deblicense/
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
-export LANG=C
+export LANG=C.UTF-8
 if test -f Makefile.PL; then
 %{__perl} Makefile.PL
 make  %{?_smp_mflags}
@@ -81,12 +82,12 @@ find %{buildroot} -type f -name '*.bs' -empty -exec rm -f {} ';'
 
 %files
 %defattr(-,root,root,-)
-/usr/lib/perl5/vendor_perl/5.28.2/x86_64-linux-thread-multi/Lexical/SealRequireHints.pm
 
 %files dev
 %defattr(-,root,root,-)
 /usr/share/man/man3/Lexical::SealRequireHints.3
 
-%files lib
+%files perl
 %defattr(-,root,root,-)
-/usr/lib/perl5/vendor_perl/5.28.2/x86_64-linux-thread-multi/auto/Lexical/SealRequireHints/SealRequireHints.so
+/usr/lib/perl5/vendor_perl/5.30.1/x86_64-linux-thread-multi/Lexical/SealRequireHints.pm
+/usr/lib/perl5/vendor_perl/5.30.1/x86_64-linux-thread-multi/auto/Lexical/SealRequireHints/SealRequireHints.so
