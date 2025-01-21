@@ -4,7 +4,7 @@
 #
 Name     : perl-Lexical-SealRequireHints
 Version  : 0.012
-Release  : 28
+Release  : 29
 URL      : https://cpan.metacpan.org/authors/id/Z/ZE/ZEFRAM/Lexical-SealRequireHints-0.012.tar.gz
 Source0  : https://cpan.metacpan.org/authors/id/Z/ZE/ZEFRAM/Lexical-SealRequireHints-0.012.tar.gz
 Source1  : http://http.debian.net/debian/pool/main/libl/liblexical-sealrequirehints-perl/liblexical-sealrequirehints-perl_0.011-2.debian.tar.xz
